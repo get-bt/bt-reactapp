@@ -1,26 +1,32 @@
-import React from 'react';
-import logo from './logo.svg';
+import React, { useState } from 'react';
+import axios from 'axios';
 import './App.css';
 
-function App() {
+export default function App() {
+  const [todoData, setTodoData] = useState([]);
+  getTodos(setTodoData);
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <body>
+        {todoData && 
+          <ul>
+            {todoData.map(({id, name, isComplete}) => (
+              <li key={id}>{name}: {isComplete ? 'Complete!' : 'Not Complete'}</li>
+            ))}
+          </ul>
+        }
+
+      </body>
     </div>
   );
 }
 
-export default App;
+async function getTodos(setData:Function) {
+  try {
+    const response = await axios.get('api/todos')
+    setData(response.data.todos)
+  } catch (error) {
+    console.log(error)
+  }
+}
