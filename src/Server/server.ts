@@ -56,7 +56,9 @@ export function makeServer () {
                 name() {
                     return faker.random.words(4)
                 },
-                isComplete: false
+                isComplete() {
+                    return faker.datatype.boolean()
+                }
             })
         },
         seeds(server) {

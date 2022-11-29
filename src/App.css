@@ -6,7 +6,7 @@
   background-color: #cecece;
   min-height: 10%;
   color: white;
-  padding: 20px;
+  padding: 50px;
 }
 
 .App-header div {
@@ -16,10 +16,26 @@
   padding-right: 10px;
 }
 
-.App-header div #sel_User {
-  min-width: 150px;
+.SearchForm {
+  max-height: 40px;
 }
 
-.App-link {
-  color: #61dafb;
+.SearchForm label {
+  padding-left: 20px;
+}
+
+.SearchTextInput div {
+  height: 40px;
+  padding-left: 10px;
+}
+
+.SearchUserInput {
+  min-width: 15rem;
+  height: 40px;
+  border-left: 1px solid #000;
+  border-right: 1px solid #000;
+}
+
+.SearchCompleteInput {
+  padding-left: 20px;
 }

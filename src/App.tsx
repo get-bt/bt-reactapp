@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import './App.css';
-import DataTable from './components/datatable';
+import QuickFilteringGrid from './components/datagrid';
 import { TodoList } from './Interfaces/todo.interface';
 import { UserList } from './Interfaces/user.interface';
 import { TodoService, UserService } from './Services/axios.service';
@@ -26,10 +26,9 @@ export default function App() {
   return (
     <div className="App">
       <header className='App-header'>
-        {/* Search Components go here. */}
       </header>
         <div>
-          <DataTable todos={todos} users={users}/>
+          <QuickFilteringGrid todos={todos} users={users}/>
         </div>
     </div>
   );
