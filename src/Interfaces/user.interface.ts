@@ -1,6 +1,6 @@
 import { TodoType } from "./todo.interface";
 
-export interface UserType {
+export type UserType = {
     id?: number,
     firstName: string;
     lastName: string;

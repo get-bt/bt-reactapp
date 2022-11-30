@@ -5,20 +5,12 @@ import {
     hasMany,
     RestSerializer,
     Factory,
-    JSONAPISerializer
 } from "miragejs";
 import {faker} from '@faker-js/faker';
 
 export function makeServer () {
     const server = new Server({
         serializers: {
-            // application: JSONAPISerializer.extend({
-            //     alwaysIncludeLinkageData: true
-            // }),
-            // todos: RestSerializer.extend({
-            //     include:["user"],
-            //     embed: true
-            // }),
             todo: RestSerializer.extend({
                 serializeIds:"always",
                 
@@ -26,11 +18,7 @@ export function makeServer () {
             users: RestSerializer.extend({
                 include:["todo"],
                 embed: true
-            }),
-            // user: RestSerializer.extend({
-            //     serializeIds:"always",
-            // })
-            
+            }),            
         },
         models: {
             todo: Model.extend({
@@ -110,21 +98,21 @@ export function makeServer () {
                 }
             })
 
+            this.patch('todo/:id/edit', (schema: any, request) => {
+                let attrs = JSON.parse(request.requestBody)
+                console.log(attrs)
+                const todoID = request.params.id
+                let todo = schema.todos.find(todoID)
+                todo.update(attrs)
+                return todo
+            })
+
             // DEL :id
             this.get('todo/:id/delete', (schema: any, request) => {
                 const todoID = request.params.id
                 schema.todos.find(todoID).destroy()
                 return {success: true}
             })
-
-            // My own addition - can ignore.
-            // this.get('todo/:id/user', (schema: any, request) => {
-            //     const todoID = request.params.id
-            //     const todo = schema.todos.find(todoID)
-            //     const userID = todo.userId
-            //     const user = schema.users.find(userID)
-            //     return {user: user}
-            // })
 
             // POST
             this.get('todo/create', (schema: any, request) => {

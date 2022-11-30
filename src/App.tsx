@@ -1,16 +1,13 @@
+import React from 'react';
 import './App.css';
-import QuickFilteringGrid from './components/datagrid';
+import TodoDisplayer from './features/todos/todoDisplay';
 
-
-export default function App() {
-
+function App() {
   return (
     <div className="App">
-      <header className='App-header'>
-      </header>
-        <div>
-          <QuickFilteringGrid/>
-        </div>
+      <TodoDisplayer/>
     </div>
   );
 }
+
+export default App;

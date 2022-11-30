@@ -1,6 +1,6 @@
 import axios, {AxiosResponse} from "axios";
-import { TodoList, TodoType } from "../Interfaces/todo.interface";
-import { UserList, UserType } from "../Interfaces/user.interface";
+import { UserList, UserType } from "../interfaces/user.interface";
+import { TodoList, TodoType } from "../interfaces/todo.interface";
 
 
 //This isn't written as a singular 'Service,' though I realize it would probably
@@ -16,7 +16,7 @@ const responseBody = (response: AxiosResponse) => response.data;
 const requests = {
     get: (url: string) => instance.get(url).then(responseBody),
     post: (url: string, body: {}) => instance.post(url, body).then(responseBody),
-	put: (url: string, body: {}) => instance.put(url, body).then(responseBody),
+	patch: (url: string, body: {}) => instance.patch(url, body).then(responseBody),
 	delete: (url: string) => instance.delete(url).then(responseBody),
 };
 
@@ -24,7 +24,7 @@ export const UserService = {
     getUsers: (): Promise<UserList> => requests.get('users').then((response) => response.users),
     getAUser: (id: number): Promise<UserType> => requests.get('user/'+id),
     createUser: (user: UserType): Promise<UserType> => requests.post('users/create', user),
-    updateUser: (id: number, user: UserType): Promise<UserType> => requests.put('user/'+id, user),
+    updateUser: (id: number, user: UserType): Promise<UserType> => requests.patch('user/'+id, user),
     deleteUser: (id: number): Promise<void> => requests.get('user/'+id+'/delete')
 }
 
@@ -32,6 +32,6 @@ export const TodoService = {
     getTodos: (): Promise<TodoList> => requests.get('todos').then((response) => response.todos),
     getATodo: (id: number): Promise<TodoType> => requests.get('todo/'+id).then((response) => response.todo),
     createTodo: (todo: TodoType): Promise<TodoType> => requests.post('todos/create', todo),
-    updateTodo: (id: number, todo: TodoType): Promise<TodoType> => requests.put('todo/'+id, todo),
+    updateTodo: (id: number, todo: TodoType): Promise<TodoType> => requests.patch('todo/'+id+'/edit', todo),
     deleteTodo: (id: number): Promise<void> => requests.get('todo/'+id+'/delete') //this was requests.delete, however it seems MirageJS prefers .get for all interactions
 }

@@ -1,9 +1,7 @@
-import { UserType } from "./user.interface";
-
- export interface TodoType {
+export type TodoType = {
     id?: number,
     name: string;
-    user?: UserType;
+    user: number;
     isComplete: boolean;
 }
 
