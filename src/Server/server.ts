@@ -68,7 +68,7 @@ export function makeServer () {
             });
         },
         routes() {
-            this.namespace = 'api'
+            this.namespace = '/api'
 
             // User APIs
 
@@ -97,7 +97,7 @@ export function makeServer () {
             // Todo APIs
 
             // GET ALL
-            this.get('/todos', (schema: any, request) => {
+            this.get('todos', (schema: any, request) => {
                 return schema.todos.all()
             })
 
@@ -111,9 +111,9 @@ export function makeServer () {
             })
 
             // DEL :id
-            this.get('/todo/:id/delete', (schema: any, request) => {
+            this.get('todo/:id/delete', (schema: any, request) => {
                 const todoID = request.params.id
-                schema.todos.find(todoID).delete()
+                schema.todos.find(todoID).destroy()
                 return {success: true}
             })
 

@@ -1,135 +1,54 @@
 import * as React from 'react';
-import IconButton from '@mui/material/IconButton';
-import TextField from '@mui/material/TextField';
+import SearchToolbar from './searchtoolbar';
 import {
   DataGrid,
-  GridColDef,
   GridValueGetterParams,
 } from '@mui/x-data-grid';
-import ClearIcon from '@mui/icons-material/Clear';
-import SearchIcon from '@mui/icons-material/Search';
 import { TodoList } from '../Interfaces/todo.interface';
 import { UserList } from '../Interfaces/user.interface';
-import { FormControlLabel, FormGroup, MenuItem, Select, Switch } from '@mui/material';
-
-
-
-let users:UserList;
-
-interface SearchToolbarProps {
-  clearTextSearch: () => void;
-  onTextChange: () => void;
-  onUserChange: (value: string) => void;
-  onCompleteChange: (value: boolean) => void;
-  textValue: string;
-  userValue: UserList;
-}
+import { useCallback } from 'react';
+import { TodoService, UserService } from '../Services/axios.service';
+import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from '@mui/icons-material/Edit';
+import Button from '@mui/material/Button';
 
 function escapeRegExp(value: string): string {
     return value.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&');
   }
 
+export default function QuickFilteringGrid() {
 
-function SearchToolbar(props: SearchToolbarProps) {
-    const [userSelected, setUserSelected] = React.useState<string>('0')
-    const [completeSelected, setCompleteSelected] = React.useState<boolean>(false)
+  const[todos, setTodos] = React.useState<TodoList>([]);
+  const[users, setUsers] = React.useState<UserList>([]);
+  
+  const [searchValue, setSearchValue] = React.useState<string>('')
+  const [userValue, setUserValue] = React.useState<string>('0')
+  const [completeValue, setCompleteValue] = React.useState<boolean>(false)
+  const [rows, setRows] = React.useState<any[]>(todos);
 
-    const handleUserChange = function(event:any) {
-        setUserSelected(event.target.value)
-        props.onUserChange(event.target.value)
-    }
-
-    const handleCompleteChange = function(event:any) {
-        console.log(event.target.checked)
-        setCompleteSelected(event.target.checked)
-        props.onCompleteChange(event.target.checked)
-    }
-    return (
-      <FormGroup className='SearchForm' row={true}>
-        <TextField
-            className='SearchTextInput'
-            variant="standard"
-            value={props.textValue}
-            onChange={props.onTextChange}
-            placeholder="Task"
-            InputProps={{
-            startAdornment: <SearchIcon fontSize="small" />,
-            endAdornment: (
-                <IconButton
-                    title="Clear"
-                    aria-label="Clear"
-                    size="small"
-                    style={{ visibility: props.textValue ? 'visible' : 'hidden' }}
-                    onClick={props.clearTextSearch}
-                >
-                    <ClearIcon fontSize="small" />
-                </IconButton>
-            ),
-            }}
-          />
-          {users &&
-            <Select
-                className='SearchUserInput'
-                autoWidth
-                variant='standard'
-                onChange={handleUserChange}
-                value={userSelected}
-                >
-                <MenuItem value='0'>Please Select a User</MenuItem>
-                {users.map((user) => {
-                    return (
-                    <MenuItem key={user.id} value={user.id}>{user.firstName + ' ' + user.lastName}</MenuItem>
-                    )
-                })}
-                </Select>
-            }
-            <FormControlLabel
-                control={
-                    <Switch
-                        className='SearchCompleteInput'
-                        onChange={handleCompleteChange}
-                        value={completeSelected}
-                    />
-                }
-                label="Completed" />
-        </FormGroup>
-      
-    );
+  const getData = async () => {
+    const todos = await TodoService.getTodos();
+    const users = await UserService.getUsers();
+    setTodos(todos);
+    setUsers(users);
   }
-
-function getUserName(id: number):string {
+  
+  const getUserName = (id: number):string => {
     let user = users.find(user => user.id === id)
     if (user)
       return (user?.firstName + " " + user?.lastName);
     return '';
   }
 
-const columns: GridColDef[] = [
-    { field: 'name', headerName: 'Name', width: 400 },
-    { field: 'UserName', headerName: 'User', width: 200,
-        valueGetter: (params: GridValueGetterParams) =>
-          `${getUserName(params.row.user)} `
-    },
-    { field: 'isComplete', headerName: 'Completed', width: 120,
-        valueGetter: (params: GridValueGetterParams) =>
-          `${params.row.isComplete ? 'Yes' : 'No'}`
-    },
-    { field: 'actions', headerName: 'Actions', width: 200 },
-  ];
+  const onDeleteClick = async (event:any) => {
+    console.log(event.currentTarget.id)
+    await TodoService.deleteTodo(event.currentTarget.id)
+  }
 
-export default function QuickFilteringGrid(props: {todos:TodoList, users:UserList}) {
-  const data = props.todos;
-  users = props.users;
-
-  const [searchValue, setSearchValue] = React.useState<null | string>()
-  const [userValue, setUserValue] = React.useState<null | string>()
-  const [completeValue, setCompleteValue] = React.useState<boolean>()
-  const [rows, setRows] = React.useState<any[]>(data);
-
-  const requestSearch = async () => {
-    let rowsToBe = data;
+  const requestSearch = useCallback(() => {
+    let rowsToBe = todos;
     if (searchValue) {
-        const searchRegex = new RegExp(escapeRegExp(searchValue));
+        const searchRegex = new RegExp(escapeRegExp(searchValue), 'i');
         const filteredRows = rowsToBe.filter((row: any) => {
           return Object.keys(row).some((field: any) => {
             return searchRegex.test(row[field].toString());
@@ -137,46 +56,78 @@ export default function QuickFilteringGrid(props: {todos:TodoList, users:UserLis
         });
         rowsToBe = filteredRows
     }
-    if (userValue != '0') {
+    if (userValue !== '0') {
         const filteredRows = rowsToBe.filter((row:any) => {
-            return row.user == userValue
+            return row.user === userValue
         })
         rowsToBe = filteredRows
     }
-    if (completeValue != null) {
+    if (completeValue !== null) {
+        console.log(completeValue)
         const filteredRows = rowsToBe.filter((row:any) => {
-            return row.isComplete == completeValue
+            return row.isComplete === completeValue
         })
         rowsToBe = filteredRows
     }
-    console.log(rowsToBe)
-
     setRows(rowsToBe)
-  };
+  }, [todos, searchValue, userValue, completeValue]);
 
   React.useEffect(() => {
-    setRows(data);
-  }, [data]);
+    getData();
+  }, [rows]);
 
   return (
     <div style={{ height: '600px', width: '100%' }}>
       <DataGrid
         components={{ Toolbar: SearchToolbar}}
         rows={rows}
-        columns={columns}
+        columns={
+          [
+            { field: 'id', headerName: 'ID', width: 50 },
+            { field: 'name', headerName: 'Name', width: 400 },
+            { field: 'UserName', headerName: 'User', width: 200,
+                valueGetter: (params: GridValueGetterParams) =>
+                  `${getUserName(params.row.user)} `
+            },
+            { field: 'isComplete', headerName: 'Completed', width: 120,
+                valueGetter: (params: GridValueGetterParams) =>
+                  `${params.row.isComplete ? 'Yes' : 'No'}`
+            },
+            { field: 'actions', headerName: 'Actions', width: 200, renderCell(params) {
+              return (
+                <div>
+                  <Button
+                    id={params.row.id}
+                    color="primary"
+                    ><EditIcon />
+                  </Button>
+                  <Button
+                    id={params.row.id!}
+                    onClick={onDeleteClick}
+                    color="error"
+                    ><DeleteIcon />
+                  </Button>
+                </div>
+                );
+              },
+            }
+          ]
+        }
         componentsProps={{
           toolbar: {
+            users: users,
             onTextChange: (event: React.ChangeEvent<HTMLInputElement>) => {
-                setSearchValue(event.target.value)
-                requestSearch()
+              setSearchValue(event.target.value)
+              requestSearch()
             },
             onUserChange(selected: string ) {
-                setUserValue(selected)
-                requestSearch()
+              setUserValue(selected)
+              requestSearch()
             },
             onCompleteChange(selected: boolean) {
-                setCompleteValue(selected)
-                requestSearch()
+              console.log(selected)
+              setCompleteValue(selected)
+              requestSearch()
             }
           },
         }}
