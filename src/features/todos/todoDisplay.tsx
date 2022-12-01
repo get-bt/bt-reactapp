@@ -1,14 +1,12 @@
-import { Button } from "@mui/material";
-import DeleteIcon from '@mui/icons-material/Delete';
-import { DataGrid, getGridBooleanOperators, GridToolbarQuickFilter } from "@mui/x-data-grid";
-import { useRef } from "react";
+import { Button, Toolbar } from "@mui/material";
+import { Clear, Done, Delete } from "@mui/icons-material";
+import { DataGrid, getGridBooleanOperators, GridToolbarFilterButton, GridToolbarQuickFilter } from "@mui/x-data-grid";
 import { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../app/hooks"
 import { TodoType } from "../../interfaces/todo.interface";
 import { fetchUsersAsync } from "../users/userSlice";
 import { deleteTodoAsync, editTodoAsync, fetchTodosAsync } from "./todoSlice";
-import { Toolbar } from "@mui/material";
-import { Clear, Done } from "@mui/icons-material";
+
 
 const TodoDisplayer = () => {
     const dispatch = useAppDispatch();
@@ -50,13 +48,11 @@ const TodoDisplayer = () => {
         return (
             <Toolbar className="QuickSearchToolbar">
                 <GridToolbarQuickFilter/>
+                <GridToolbarFilterButton/>
                 <p>Edit Tasks by clicking on the data you wish to change.</p>
             </Toolbar>
         )
     }
-
-    const user = useRef(null);
-    const complete = useRef(null);
 
     return (
         <div className="DataGridDiv">
@@ -74,10 +70,7 @@ const TodoDisplayer = () => {
                             return getUserName(params.value)
                         },
                         editable: true,
-                        preProcessEditCellProps: ({ props }) => {
-                        user.current = props.value;
-                        return props;
-                        }
+
                     },
                     { field: 'isComplete',
                         headerName: 'Completed',
@@ -89,10 +82,7 @@ const TodoDisplayer = () => {
                         valueFormatter(params) {
                             return params.value ==='true' ? 'Complete' : 'Not Complete'
                         },
-                        preProcessEditCellProps: ({ props }) => {
-                            complete.current = props.value;
-                            return props;
-                        },
+
                         renderCell: (params) => {
                             if (params.row.isComplete) {
                                 return <Button color="success" fullWidth
@@ -122,7 +112,7 @@ const TodoDisplayer = () => {
                                     onClick={() => 
                                         handleDeleteClick(params.row.id!)
                                 }>
-                                    <DeleteIcon />
+                                    <Delete />
                                 </Button>
                             );
                           }

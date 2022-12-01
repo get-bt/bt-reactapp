@@ -1,4 +1,3 @@
-import React from 'react';
 import './App.css';
 import AddTodoToolbar from './components/addtodotoolbar';
 import TodoDisplayer from './features/todos/todoDisplay';
