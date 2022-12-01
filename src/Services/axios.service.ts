@@ -1,6 +1,6 @@
 import axios, {AxiosResponse} from "axios";
-import { UserList, UserType } from "../interfaces/user.interface";
 import { TodoList, TodoType } from "../interfaces/todo.interface";
+import { UserList, UserType } from "../interfaces/user.interface";
 
 
 //This isn't written as a singular 'Service,' though I realize it would probably
@@ -31,7 +31,7 @@ export const UserService = {
 export const TodoService = {
     getTodos: (): Promise<TodoList> => requests.get('todos').then((response) => response.todos),
     getATodo: (id: number): Promise<TodoType> => requests.get('todo/'+id).then((response) => response.todo),
-    createTodo: (todo: TodoType): Promise<TodoType> => requests.post('todos/create', todo),
+    createTodo: (todo: TodoType): Promise<TodoType> => requests.post('todo/create', todo),
     updateTodo: (id: number, todo: TodoType): Promise<TodoType> => requests.patch('todo/'+id+'/edit', todo),
     deleteTodo: (id: number): Promise<void> => requests.get('todo/'+id+'/delete') //this was requests.delete, however it seems MirageJS prefers .get for all interactions
 }

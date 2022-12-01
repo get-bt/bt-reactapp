@@ -44,6 +44,15 @@ export const deleteTodoAsync = createAsyncThunk(
     }
 )
 
+export const addTodoAsync = createAsyncThunk(
+    'todos/createTodo',
+    async(newTodo: TodoType): Promise<TodoType> => {
+        const response = TodoService.createTodo(newTodo);
+        console.log(response)
+        return response;
+    }
+)
+
 const todoSlice = createSlice({
     name: 'todos',
     initialState,
@@ -64,10 +73,11 @@ const todoSlice = createSlice({
         builder.addCase(editTodoAsync.pending, (state: TodoState) => {
             state.loading = true;
         })
-        builder.addCase(editTodoAsync.rejected, (state: TodoState, everything) => {
-            console.log(everything.error)
+        builder.addCase(editTodoAsync.fulfilled, (state: TodoState) => {
             state.loading = false;
-            console.log('failed')
+        })
+        builder.addCase(editTodoAsync.rejected, (state: TodoState, everything) => {            
+            state.loading = false;
         })
         //TODO: Do I need to add cases for every function I've created? Or is that purely if I'm to keep using state.loading? 
     },

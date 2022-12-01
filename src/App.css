@@ -1,39 +1,41 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400&display=swap');
+
 .App {
   text-align: center;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+.App header {
+  background-color: #1976d2;
+  width: 900px;
+  margin: auto;
+  display: inline-block;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-float infinite 3s ease-in-out;
-  }
+.App header h2 {
+  color: white;
+  font-family: 'Roboto', sans-serif;
+  font-weight: 300;
 }
 
-.App-header {
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
+.DataGridDiv {
+  margin: auto;
+  width: 900px;
+  height: 600px;
 }
 
-.App-link {
-  color: rgb(112, 76, 182);
+.AddTodoToolBar {
+  padding-top: 25px;
 }
 
-@keyframes App-logo-float {
-  0% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(10px);
-  }
-  100% {
-    transform: translateY(0px);
-  }
+.QuickSearchToolbar {
+  width: 100%;
+}
+
+.QuickSearchToolbar p {
+  padding-left: 20%;
+  float: right;
+  color: rgb(158, 158, 158);
+  font-weight: lighter;
+  font-style: italic;
+  font-size: small;
 }

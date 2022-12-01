@@ -100,10 +100,10 @@ export function makeServer () {
 
             this.patch('todo/:id/edit', (schema: any, request) => {
                 let attrs = JSON.parse(request.requestBody)
-                console.log(attrs)
-                const todoID = request.params.id
+                let todoID = request.params.id
                 let todo = schema.todos.find(todoID)
-                todo.update(attrs)
+                let user = schema.users.find(attrs.user)
+                todo.update({...attrs, user: user})
                 return todo
             })
 
@@ -115,9 +115,11 @@ export function makeServer () {
             })
 
             // POST
-            this.get('todo/create', (schema: any, request) => {
+            this.post('todo/create', (schema: any, request) => {
                 let attrs = JSON.parse(request.requestBody)
-                return schema.todos.create(attrs)
+                let user = schema.users.find(attrs.user)
+                let newTodo = {...attrs, user:user}
+                return schema.todos.create(newTodo)
             })
         },
     })
