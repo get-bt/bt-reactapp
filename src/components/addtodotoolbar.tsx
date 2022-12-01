@@ -11,6 +11,7 @@ import { fetchUsersAsync } from "../features/users/userSlice";
 const AddTodoToolbar = () => {
     const dispatch = useAppDispatch();
     const users = useAppSelector(state => state.users.userData)
+    const loading = useAppSelector(state => state.todos.loading);
     const [error, setError] = useState<string>('');
     const [dataPresent, setDataPresent] = useState<boolean>(false);
     
@@ -59,22 +60,22 @@ const AddTodoToolbar = () => {
                             <TextField required label="Task Name" variant="outlined" name="name" fullWidth id="input-taskName" helperText={error} onChange={handleInput} />
                         </FormGroup>
                         <FormGroup>
-                            <InputLabel id="userSelectLabel">User</InputLabel>
-                            <Select name="user"
+                            <TextField name="user"
+                                select
                                 style={{width: 222}}
-                                value='' required
+                                defaultValue=''
+                                required
                                 id="input-user"
-                                labelId="userSelectLabel"
                                 label="User"
                                 onChange={handleInput}>
-                                    <MenuItem selected disabled value=''>Please Select a User</MenuItem>
                                     {users.map((user) => {
                                         return (
                                             <MenuItem key={user.id} value={user.id}>{user.firstName + ' ' + user.lastName}</MenuItem>
                                         )})}
-                            </Select>
+                            </TextField>
                         </FormGroup>
                         <Button variant="contained"
+                            disabled={loading}
                             type="submit"
                         >Add Task</Button>
                     </Stack>
