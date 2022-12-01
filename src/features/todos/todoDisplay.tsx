@@ -58,7 +58,7 @@ const TodoDisplayer = () => {
         <div className="DataGridDiv">
             <DataGrid
                 columns={[
-                    { field: 'name', headerName: 'Name', width: 400, editable: true},
+                    { field: 'name', headerName: 'Name', width: 400, type: "string", editable: true},
                     { field: 'user',
                         headerName: 'User',
                         width: 200,
@@ -122,8 +122,10 @@ const TodoDisplayer = () => {
                 editMode="row"
                 loading = {useAppSelector(state => state.todos.loading)}
                 experimentalFeatures={{ newEditingApi: true }}
-                processRowUpdate={(newRow: any) => {
+                processRowUpdate={(newRow: any, oldRow:any) => {
                     const updatedRow = { ...newRow} as TodoType;
+                    if (updatedRow.name === '')
+                        return oldRow;
                     dispatch(editTodoAsync(updatedRow))
                     return updatedRow;
                 }}
