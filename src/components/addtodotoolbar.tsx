@@ -12,7 +12,6 @@ const AddTodoToolbar = () => {
     const dispatch = useAppDispatch();
     const users = useAppSelector(state => state.users.userData)
     const loading = useAppSelector(state => state.todos.loading);
-    const [error, setError] = useState<string>('');
     const [dataPresent, setDataPresent] = useState<boolean>(false);
     
     useEffect(() => {
@@ -40,11 +39,9 @@ const AddTodoToolbar = () => {
     const onSubmitClicked = (event:any) => {
         event.preventDefault()
         if (formInput.name  === '') {
-            setError('name too short')
             return
         }
         if (formInput.user === 0) {
-            setError('no user selected')
             return 
         }
         dispatch(addTodoAsync(formInput))
@@ -57,7 +54,7 @@ const AddTodoToolbar = () => {
                 <FormControl>
                     <Stack direction={"row"} spacing={2}>
                         <FormGroup>
-                            <TextField required label="Task Name" variant="outlined" name="name" fullWidth id="input-taskName" helperText={error} onChange={handleInput} />
+                            <TextField required label="Task Name" variant="outlined" name="name" fullWidth id="input-taskName" onChange={handleInput} />
                         </FormGroup>
                         <FormGroup>
                             <TextField name="user"
